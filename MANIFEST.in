@@ -1,0 +1,3 @@
+recursive-include psycospans *.py
+
+include MANIFEST.in LICENSE README.rst Makefile setup.py tox.ini
