@@ -24,6 +24,11 @@ _raw_range = namedtuple("rawrange", ["lower", "upper", "lower_inc", "upper_inc",
 raw_range = partial(_raw_range, empty=False)
 empty_rawrange = _raw_range(*([None] * 4), empty=True)
 
+try:
+    ustr = unicode
+except NameError:
+    ustr = str
+
 def _raw_token(scanner, token):
     return token
 
@@ -86,13 +91,16 @@ def register_range_caster(pgrange, pyrange, oid, subtype_oid, array_oid, scope=N
     register_type(range_array_type, scope)
 
 def adapt_range(pgrange, pyrange):
+    if isinstance(pgrange, ustr):
+        pgrange = pgrange.encode("utf8")
+
     if not isinstance(pyrange, range_):
         raise ValueError((
             "Trying to adapt range {range.__class__.__name__} which does not "
             "extend base range type.").format(range=pyrange))
 
     if not pyrange:
-        return AsIs("'empty'::" + pgrange)
+        return AsIs((b"'empty'::" + pgrange).decode("utf8"))
 
     lower = b"NULL"
     if not pyrange.lower_inf:
@@ -113,13 +121,6 @@ def adapt_range(pgrange, pyrange):
         b"]" if pyrange.upper_inc else b")",
         b"')",
     ]).decode("utf8"))
-
-    # return AsIs("{range}({lower}, {upper}, '{lower_inc}{upper_inc}')".format(
-    #     range=pgrange,
-    #     lower=lower,
-    #     upper=upper,
-    #     lower_inc="[" if pyrange.lower_inc else "(",
-    #     upper_inc="]" if pyrange.upper_inc else ")"))
 
 def query_range_oids(pgrange, conn_or_curs):
     conn, curs = _solve_conn_curs(conn_or_curs)
