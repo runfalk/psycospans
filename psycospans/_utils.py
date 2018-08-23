@@ -3,7 +3,7 @@ import re
 from collections import namedtuple
 from functools import partial
 from psycopg2._psycopg import ProgrammingError
-from psycopg2.extensions import AsIs, adapt, b, new_type, new_array_type, register_type, STATUS_IN_TRANSACTION
+from psycopg2.extensions import AsIs, adapt, new_type, new_array_type, register_type, STATUS_IN_TRANSACTION
 from psycopg2.extras import _solve_conn_curs
 
 from spans.types import range_
@@ -94,24 +94,24 @@ def adapt_range(pgrange, pyrange):
     if not pyrange:
         return AsIs("'empty'::" + pgrange)
 
-    lower = b("NULL")
+    lower = b"NULL"
     if not pyrange.lower_inf:
         lower = adapt(pyrange.lower).getquoted()
 
-    upper = b("NULL")
+    upper = b"NULL"
     if not pyrange.upper_inf:
         upper = adapt(pyrange.upper).getquoted()
 
     return AsIs(b"".join([
-        b(pgrange),
-        b("("),
+        pgrange,
+        b"(",
         lower,
-        b(", "),
+        b", ",
         upper,
-        b(", '"),
-        b("[" if pyrange.lower_inc else "("),
-        b("]" if pyrange.upper_inc else ")"),
-        b("')")
+        b", '",
+        b"[" if pyrange.lower_inc else b"(",
+        b"]" if pyrange.upper_inc else b")",
+        b"')",
     ]).decode("utf8"))
 
     # return AsIs("{range}({lower}, {upper}, '{lower_inc}{upper_inc}')".format(
