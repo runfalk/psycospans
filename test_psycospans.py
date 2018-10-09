@@ -4,17 +4,17 @@ import os
 from functools import partial
 from psycopg2._psycopg import ProgrammingError, InternalError
 from spans import *
-from unittest import TestCase, TestSuite, defaultTestLoader, skipUnless
+from unittest import TestCase, skipUnless
 
-from . import *
-from ._utils import *
+from psycospans import *
+from psycospans._utils import *
 
 def build_test_dsn():
-    dbname = os.environ.get("PSYCOSPANS_TESTDB", "psycospans_test")
-    dbhost = os.environ.get("PSYCOSPANS_TESTDB_HOST", None)
-    dbport = os.environ.get("PSYCOSPANS_TESTDB_PORT", None)
-    dbuser = os.environ.get("PSYCOSPANS_TESTDB_USER", None)
-    dbpass = os.environ.get("PSYCOSPANS_TESTDB_PASSWORD", None)
+    dbname = os.environ.get("PGDATABASE", "psycospans_test")
+    dbhost = os.environ.get("PGHOST", None)
+    dbport = os.environ.get("PGPORT", None)
+    dbuser = os.environ.get("PGUSER", None)
+    dbpass = os.environ.get("PGPASSWORD", None)
 
     dsn = ["dbname=" + dbname]
 
@@ -185,9 +185,3 @@ class TestDatabase(TestCase):
         else:
             self.conn.commit()
         self.conn.commit()
-
-def suite():
-    return TestSuite(map(defaultTestLoader.loadTestsFromTestCase, [
-        TestCasting,
-        TestDatabase
-    ]))
