@@ -1,7 +1,10 @@
 PsycoSpans
 ==========
-Psycospans brings support for Spans [#]_ to Psycopg2 [#]_. The Spans library
-implements PostgreSQL's range types [#]_ in pure Python.
+Psycospans brings support for `Spans <https://github.com/runfalk/spans>`_ to
+`Psycopg2 <http://initd.org/psycopg/>`_.
+
+PsycopSpans work by wrapping psycopg2's ``connect()`` function and set the
+connection up for handling Spans' range types.
 
 .. code-block:: python
 
@@ -26,20 +29,17 @@ Psycospans will only work with PostgreSQL 9.2 or later.
 
 Installation
 ------------
-Psycospans exists on PyPI.
+Psycospans exists on PyPI. Note that you must install ``psycopg2`` manually.
+This is because you may use either ``psycopg2`` or ``psycopg2-binary``.
 
 ::
 
-    pip install psycospans
+    pip install psycospans psycopg2-binary
 
 
 Documentation
 -------------
 For full doumentation please run ``pydoc psycospans`` from a shell.
-
-.. [#] https://github.com/runfalk/spans
-.. [#] http://initd.org/psycopg/
-.. [#] http://www.postgresql.org/docs/9.2/static/rangetypes.html
 
 
 Changelog
@@ -47,7 +47,7 @@ Changelog
 
 Version 1.0.0
 -------------
-Released on <unreleased>
+Released on 9th October 2018
 
 - Added wheel
 - Moved unit tests out of package

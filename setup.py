@@ -11,7 +11,7 @@ with open("README.rst") as fp:
 
 setup(
     name="PsycoSpans",
-    version="0.1.1",
+    version="1.0.0",
     description="Psycopg2 support for the Spans library",
     long_description=long_desc,
     license="MIT",
